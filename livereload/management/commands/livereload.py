@@ -41,6 +41,9 @@ class Command(BaseCommand):
         for app_config in apps.get_app_configs():
             server.watch(os.path.join(app_config.path, 'static'))
             server.watch(os.path.join(app_config.path, 'templates'))
+        for task in getattr(settings, 'LIVERELOAD_TASKS', []):
+            for path in task.get('paths'):
+                server.watch(path, task.get('task'), task.get('delay'))
 
         server.serve(
             host=options['host'],
